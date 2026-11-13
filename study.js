@@ -5,7 +5,7 @@ try {
  const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
  if (Array.isArray(saved)) completed = new Set(saved.filter(x => typeof x === 'string'));
 } catch {storageOK = false}
-const weekNumber = () => Number(location.hash.match(/^#week-([1-9])(?:$|\/)/)?.[1] || 1);
+const weekNumber = () => Number(location.hash.match(/^#week-([1-9]\d*)(?:$|\/)/)?.[1] || 1);
 const sectionKey = (n,start) => 'w'+n+'-p'+start;
 function sectionsFor(n) {
  if (!weeks[n]) return [];
@@ -104,10 +104,10 @@ function showWeek(){
    const article=document.querySelector('article');
    const headings=article.querySelectorAll('.sectiontitle');
    const cards=figures[n].map(([p,t])=>lectureCard(n,p,t));
-   const gallery='<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
+   const gallery=n===10?'':'<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
    headings[1].insertAdjacentHTML('beforebegin','<section id="visual"><div class="sectiontitle"><h2>圖解複習</h2></div>'+studyDiagram(n)+gallery+'</section>');
    article.querySelector('.hero').insertAdjacentHTML('afterbegin',noteButton(n,'overview','本週總筆記'));
-   article.querySelector('.hero').insertAdjacentHTML('beforeend',pagePicker(1,weeks[n][2],'跳到本週講義頁'));
+   if(n!==10)article.querySelector('.hero').insertAdjacentHTML('beforeend',pagePicker(1,weeks[n][2],'跳到本週講義頁'));
    headings[0].insertAdjacentHTML('afterend',noteButton(n,'highlights','本週重點筆記'));
    headings[1].insertAdjacentHTML('afterend',noteButton(n,'chapters','章節總筆記'));
    article.querySelectorAll('.card').forEach((card,i)=>card.insertAdjacentHTML('afterbegin',noteButton(n,'concept-'+i,card.querySelector('h3').textContent+'筆記')));
@@ -117,7 +117,7 @@ function showWeek(){
     const key=sectionKey(n,s.start),qs=drills[n].filter(q=>q[0]>=s.start&&q[0]<=s.end);
     const el=document.createElement('details');el.id='p'+s.start;
     el.innerHTML='<summary><span>'+escapeText(s.title)+'</span>'+(qs.length?'<small class="practice-tag">計算題 ×'+qs.length+'</small>':'')+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="readbar"><label><input type="checkbox" data-key="'+key+'" '+(completed.has(key)?'checked':'')+'> 已讀本章</label><span>'+s.range+'</span></div><div class="reading"></div>';
-    el.querySelector('summary').insertAdjacentHTML('afterend',pagePicker(s.start,s.end,'跳到本章講義頁')+noteButton(n,'chapter-'+s.start,s.title+'筆記'));
+    el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?'':pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,'chapter-'+s.start,s.title+'筆記'));
     el.addEventListener('toggle',()=>{const body=el.querySelector('.reading');if(el.open&&!body.hasChildNodes()){body.innerHTML=renderReading(n,s);convertPlainMath(body)}});
     article.append(el);
    });
