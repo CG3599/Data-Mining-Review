@@ -1,0 +1,26 @@
+[
+  {
+    "title": "分類實務與模型評估",
+    "file": "DM_week10",
+    "pages": 50,
+    "sha256": "2470118ef023b69d716ca56e09a10c06b51c39c017734b8c303dc5114ac52c52"
+  },
+  {
+    "title": "LIBSVM 操作與驗證",
+    "file": "DM_week10_libsvm",
+    "pages": 13,
+    "sha256": "235a941c93786dfbc123b08c03379a1e9a404e96ad9c9b7be90faf7c1b8a1756"
+  },
+  {
+    "title": "推薦系統",
+    "file": "DM_recommendation",
+    "pages": 73,
+    "sha256": "8b78aa0e89a1a2fde6513d21d879a841485ff062547da22295ec7470de95e084"
+  },
+  {
+    "title": "社群網路探勘",
+    "file": "DM_social_network",
+    "pages": 71,
+    "sha256": "032d35dcf4cdbcf9faec8fbd7e6f3ab1df93f5be85e7ba5d9f05ed3d7ad98b20"
+  }
+]

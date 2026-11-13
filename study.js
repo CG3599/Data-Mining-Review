@@ -9,6 +9,7 @@ const weekNumber = () => Number(location.hash.match(/^#week-([1-9]\d*)(?:$|\/)/)
 const sectionKey = (n,start) => 'w'+n+'-p'+start;
 function sectionsFor(n) {
  if (!weeks[n]) return [];
+ if(n===10)return chapters(n);
  const list=chapters(n).map(s=>{const [start,end]=s.range.match(/\d+/g).map(Number);return {...s,start,end}});
  const last=list.at(-1).end;
  if(last<weeks[n][2])list.push({start:last+1,end:weeks[n][2],range:'P. '+(last+1)+' – '+weeks[n][2],title:'接續講義與複習',content:''});
@@ -32,6 +33,7 @@ function answerValue(raw){
  return Number(m[1])/(m[3]?100:m[2]?Number(m[2]):1);
 }
 function renderReading(n,s){
+ if(n===10)return renderWeek10Reading(s);
  const qs=drills[n].filter(q=>q[0]>=s.start && q[0]<=s.end);
  const images=new Map(figures[n].filter(([p])=>p>=s.start && p<=s.end));
  const blocks=s.content.split(/(?=^(?:### |\*\*)(?:P\.?\s*\d+|第\s*\d+\s*頁))/m);
@@ -80,7 +82,7 @@ function rail(n){
   let links='';
   if(w===n&&list.length){
    links='<div class="subnav"><a href="#week-'+n+'/visual">圖解複習</a>'+list.map(s=>{
-    const read=completed.has(sectionKey(n,s.start));return '<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">'+(n===10?'講義 ':'P. ')+s.start+'–'+s.end+'</small></span></a>'
+    const read=completed.has(sectionKey(n,s.start));return '<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">'+(n===10?s.range:'P. '+s.start+'–'+s.end)+'</small></span></a>'
    }).join('')+'</div>';
   }
   return '<div class="weekblock"><a class="week-link '+(w===n?'active ':'')+(list.length?'':'pending')+'" href="#week-'+w+'"><span><strong>Week '+w+'</strong><small>'+(weeks[w]?.[0]||'尚無筆記')+'</small></span>'+(list.length?'<span class="counter" aria-label="已讀章節">'+(done===list.length?'✓ ':'')+done+'/'+list.length+'</span>':'')+'</a>'+links+'</div>';
@@ -88,6 +90,7 @@ function rail(n){
  nav.querySelectorAll('a').forEach(a=>{if(a.hash===location.hash)a.setAttribute('aria-current','location')});
 }
 function jump(){
+ if(weekNumber()===10 && jumpWeek10Page()){rail(10);return}
  const n=weekNumber(),target=location.hash.split('/')[1];
  const el=target&&document.getElementById(target);
  if(el){if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'})}
@@ -120,7 +123,7 @@ function showWeek(){
     const key=sectionKey(n,s.start),qs=drills[n].filter(q=>q[0]>=s.start&&q[0]<=s.end);
     const el=document.createElement('details');el.id='p'+s.start;
     el.innerHTML='<summary><span>'+escapeText(s.title)+'</span>'+(qs.length?'<small class="practice-tag">計算題 ×'+qs.length+'</small>':'')+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="readbar"><label><input type="checkbox" data-key="'+key+'" '+(completed.has(key)?'checked':'')+'> 已讀本章</label><span>'+s.range+'</span></div><div class="reading"></div>';
-    el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?'':pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,'chapter-'+s.start,s.title+'筆記'));
+    el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?week10Picker(s):pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,'chapter-'+s.start,s.title+'筆記'));
     el.addEventListener('toggle',()=>{const body=el.querySelector('.reading');if(el.open&&!body.hasChildNodes()){body.innerHTML=renderReading(n,s);convertPlainMath(body)}});
     article.append(el);
    });

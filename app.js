@@ -5,11 +5,11 @@ const weeks={
 6:['頻繁樣式探勘進階','Advanced Frequent Pattern Mining',82,'減少候選項目集','DHP 利用雜湊桶的計數，先排除不可能達到最低支持度的候選組合。','FP-Growth','把交易壓縮成共享前綴的 FP-Tree，再透過條件樣式基底遞迴挖掘。','評估關聯規則','搭配提升度比較條件機率和基準機率，檢查高信賴度是否只來自商品本身熱門。'],
 7:['分類與決策樹','Classification',92,'監督式學習','以具有類別標籤的資料訓練模型，再用獨立的測試資料評估預測能力。','選擇分割屬性','比較資訊增益、增益率或 Gini 不純度，找出能讓子節點類別更一致的切法。','貝氏分類','結合先驗機率與特徵的概似度，預測後驗機率最高的類別。'],
 9:['分類模型與集成學習','Classification & Ensemble Methods',67,'鄰近樣本與案例','k-NN 透過鄰居投票預測類別；CBR 從相似案例尋找可調整的解法。','線性分類器','邏輯斯迴歸把線性分數轉換成機率；SVM 尋找能擴大分類間隔的邊界。','集成方法','Bagging、Boosting 與隨機森林以不同方式組合多個模型的預測。'],
-10:['第十週｜綜合課程範圍','Week 10 · Data Mining Topics',4,'第十週主講義','DM_week10 收錄第十週課程主題，原始逐頁筆記待補。','LIBSVM 與分類模型','DM_week10_libsvm 是 SVM 工具與分類模型操作的複習範圍。','推薦與社群網路','DM_recommendation 與 DM_social_network 分別對應推薦系統及社群網路分析。']};
+10:['分類、推薦與社群網路','Classification · Recommendation · Social Networks',207,'分類實務與 LIBSVM','從特徵選擇、泛化評估到 SVM 的訓練、縮放與驗證。','推薦系統','內容式推薦、協同過濾、潛在因子、跨領域冷啟動與排名評估。','社群網路探勘','中心性、社群偵測、連結預測、資訊傳播與流行病模型。']};
 const icons=['<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v13c0 4 16 4 16 0V5M4 11c0 4 16 4 16 0"/>','<path d="m3 6 9-4 9 4-9 5zM3 11l9 5 9-5M3 16l9 5 9-5"/>','<path d="M4 3v17h17M7 15l4-5 4 2 5-7"/><circle cx="20" cy="5" r="1"/>'];
 const escapeText=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 function chapters(n){
- if(n===10)return week10Modules.map((m,i)=>({title:m.title,file:m.file,content:m.content,range:'範圍 '+(i+1)+' – '+(i+1)}));
+ if(n===10)return week10Modules.map((m,i)=>({...m,start:i+1,end:i+1,content:'',range:'PDF P. 1 – '+m.pages.length}));
  let raw=notes[n]; // Display complete lecture-page blocks from the imported notes.
  if(n===1)raw=raw.split('## 第一週考試重點總整理')[0];
  else {const pages=[...raw.matchAll(/^### (?:P\.?\s*\d+|第\s*\d+\s*頁).*$/gm)];raw=raw.slice(0,pages.at(-1).index)}
@@ -28,9 +28,9 @@ function render(){
  const n=weekNumber(),data=weeks[n];
  const label='Week '+n;document.title=label+' · '+(data?.[0]||'尚無筆記')+'｜資料探勘';document.querySelector('#crumb').textContent=label;
  const sections=data?chapters(n):[];
- let html='<section class="hero"><canvas aria-hidden="true"></canvas><div class="kicker">WEEK '+String(n).padStart(2,'0')+'</div><h1>'+(data?.[0]||'尚無筆記')+'</h1><div class="english">'+(data?.[1]||'')+'</div>'+(data?'<div class="meta"><span>'+(n===10?'4 份課程講義':'講義 '+data[2]+' 頁')+'</span><span>'+sections.length+' 個筆記章節</span></div>':'')+'</section>';
+ let html='<section class="hero"><canvas aria-hidden="true"></canvas><div class="kicker">WEEK '+String(n).padStart(2,'0')+'</div><h1>'+(data?.[0]||'尚無筆記')+'</h1><div class="english">'+(data?.[1]||'')+'</div>'+(data?'<div class="meta"><span>'+(n===10?'4 份講義 · 207 頁逐頁講解':'講義 '+data[2]+' 頁')+'</span><span>'+sections.length+' 個筆記章節</span></div>':'')+'</section>';
  if(data){
- html+='<div class="sectiontitle"><h2>本週重點</h2></div><div class="cards">'+icons.map((icon,i)=>'<section class="card"><svg aria-hidden="true" viewBox="0 0 24 24">'+icon+'</svg><h3>'+data[3+i*2]+'</h3><p>'+data[4+i*2]+'</p></section>').join('')+'</div><div class="sectiontitle"><h2>章節筆記</h2>'+(sourceIds[n]?'<a target="_blank" rel="noopener" href="https://chatgpt.com/c/'+sourceIds[n]+'">完整原始筆記 ↗</a>':'<span>四份課程範圍 · 概覽版</span>')+'</div>';
+ html+='<div class="sectiontitle"><h2>本週重點</h2></div><div class="cards">'+icons.map((icon,i)=>'<section class="card"><svg aria-hidden="true" viewBox="0 0 24 24">'+icon+'</svg><h3>'+data[3+i*2]+'</h3><p>'+data[4+i*2]+'</p></section>').join('')+'</div><div class="sectiontitle"><h2>章節筆記</h2>'+(sourceIds[n]?'<a target="_blank" rel="noopener" href="https://chatgpt.com/c/'+sourceIds[n]+'">完整原始筆記 ↗</a>':'<span>依 PDF 實際頁碼 · 原圖與講解對照</span>')+'</div>';
  html+=sections.map((s,i)=>'<details><summary><span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+escapeText(s.title)+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="reading"></div></details>').join('');
  }else html+='<p class="empty">目前的課程整理中尚無 '+label+' 的筆記。</p>';
  document.querySelector('article').innerHTML=html;document.querySelectorAll('details').forEach((d,i)=>d.addEventListener('toggle',()=>{if(d.open&&!d.lastElementChild.childNodes.length)d.lastElementChild.innerHTML=marked.parse(escapeText(sections[i].content))}));
