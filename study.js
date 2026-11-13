@@ -50,7 +50,7 @@ function renderReading(n,s){
    html+='<div class="gallery inline-figure">'+lectureCard(n,page,images.get(page))+'</div>'+workedExample(n,page);
    images.delete(page);
   }
-  const figure=topicFigures[n][page];
+  const figure=topicFigures[n]?.[page];
   if(figure){
    const [title,caption]=figure;
    const src='figures/example-w'+n+'-p'+page+'.svg';
@@ -68,6 +68,9 @@ function renderReading(n,s){
  for(const [page,title] of images){
   html+='<div class="gallery inline-figure">'+lectureCard(n,page,title)+'</div>'+workedExample(n,page);
  }
+ if(n===10 && s.file){
+  html='<p><a class="lecture" href="lectures/'+encodeURIComponent(s.file)+'.pdf" target="_blank" rel="noopener">開啟 '+escapeText(s.file)+'.pdf 完整講義 ↗</a></p>'+html;
+ }
  return html+qs.filter(q=>!placed.has(q)).map(q=>drillForm(n,q)).join('');
 }
 function rail(n){
@@ -77,7 +80,7 @@ function rail(n){
   let links='';
   if(w===n&&list.length){
    links='<div class="subnav"><a href="#week-'+n+'/visual">圖解複習</a>'+list.map(s=>{
-    const read=completed.has(sectionKey(n,s.start));return '<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">P. '+s.start+'–'+s.end+'</small></span></a>'
+    const read=completed.has(sectionKey(n,s.start));return '<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">'+(n===10?'講義 ':'P. ')+s.start+'–'+s.end+'</small></span></a>'
    }).join('')+'</div>';
   }
   return '<div class="weekblock"><a class="week-link '+(w===n?'active ':'')+(list.length?'':'pending')+'" href="#week-'+w+'"><span><strong>Week '+w+'</strong><small>'+(weeks[w]?.[0]||'尚無筆記')+'</small></span>'+(list.length?'<span class="counter" aria-label="已讀章節">'+(done===list.length?'✓ ':'')+done+'/'+list.length+'</span>':'')+'</a>'+links+'</div>';
