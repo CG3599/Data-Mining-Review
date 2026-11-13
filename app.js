@@ -9,7 +9,7 @@ const weeks={
 const icons=['<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v13c0 4 16 4 16 0V5M4 11c0 4 16 4 16 0"/>','<path d="m3 6 9-4 9 4-9 5zM3 11l9 5 9-5M3 16l9 5 9-5"/>','<path d="M4 3v17h17M7 15l4-5 4 2 5-7"/><circle cx="20" cy="5" r="1"/>'];
 const escapeText=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 function chapters(n){
- if(n===10)return week10Modules.map((m,i)=>({title:m.title,content:m.content,range:'範圍 '+(i+1)+' – '+(i+1)}));
+ if(n===10)return week10Modules.map((m,i)=>({title:m.title,file:m.file,content:m.content,range:'範圍 '+(i+1)+' – '+(i+1)}));
  let raw=notes[n]; // Display complete lecture-page blocks from the imported notes.
  if(n===1)raw=raw.split('## 第一週考試重點總整理')[0];
  else {const pages=[...raw.matchAll(/^### (?:P\.?\s*\d+|第\s*\d+\s*頁).*$/gm)];raw=raw.slice(0,pages.at(-1).index)}
