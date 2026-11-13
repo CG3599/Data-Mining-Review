@@ -20,6 +20,11 @@ function studyDiagram(week) {
  }else if(week===7){
   art=line(246,44,116,83)+line(325,44,462,83)+box(204,4,167,40,'甲 4 ／ 乙 4')+box(32,72,163,37,'甲 4 ／ 乙 0')+box(386,72,163,37,'甲 0 ／ 乙 4');
   caption='一次完全分離兩類的切分。父節點的 Gini 為 0.5，兩個子節點的 Gini 都是 0。';
+ }else if(week===10){
+  art=line(108,52,181,52)+line(286,52,361,52)+line(466,52,497,52)
+    +box(3,28,105,45,'Week 10')+box(181,28,106,45,'LIBSVM')
+    +box(361,28,106,45,'推薦系統')+box(497,28,85,45,'社群分析');
+  caption='Week 10 包含四個課程範圍：DM_week10、LIBSVM、推薦系統及社群網路分析。';
  }else{
   art='<ellipse cx="185" cy="57" rx="83" ry="46" class="neighborhood"/>';
   [[142,52],[204,28],[219,75],[310,30],[340,86]].forEach(([x,y],i)=>art+=i<2?'<circle cx="'+x+'" cy="'+y+'" r="8" class="class-a"/>':'<rect x="'+(x-7)+'" y="'+(y-7)+'" width="14" height="14" class="class-b"/>');
