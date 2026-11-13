@@ -9,6 +9,7 @@ const weeks={
 const icons=['<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v13c0 4 16 4 16 0V5M4 11c0 4 16 4 16 0"/>','<path d="m3 6 9-4 9 4-9 5zM3 11l9 5 9-5M3 16l9 5 9-5"/>','<path d="M4 3v17h17M7 15l4-5 4 2 5-7"/><circle cx="20" cy="5" r="1"/>'];
 const escapeText=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 function chapters(n){
+ if(n===10)return week10Modules.map((m,i)=>({title:m.title,content:m.content,range:'範圍 '+(i+1)+' – '+(i+1)}));
  let raw=notes[n]; // Display complete lecture-page blocks from the imported notes.
  if(n===1)raw=raw.split('## 第一週考試重點總整理')[0];
  else {const pages=[...raw.matchAll(/^### (?:P\.?\s*\d+|第\s*\d+\s*頁).*$/gm)];raw=raw.slice(0,pages.at(-1).index)}
@@ -27,7 +28,7 @@ function render(){
  const n=weekNumber(),data=weeks[n];
  const label='Week '+n;document.title=label+' · '+(data?.[0]||'尚無筆記')+'｜資料探勘';document.querySelector('#crumb').textContent=label;
  const sections=data?chapters(n):[];
- let html='<section class="hero"><canvas aria-hidden="true"></canvas><div class="kicker">WEEK '+String(n).padStart(2,'0')+'</div><h1>'+(data?.[0]||'尚無筆記')+'</h1><div class="english">'+(data?.[1]||'')+'</div>'+(data?'<div class="meta"><span>講義 '+data[2]+' 頁</span><span>'+sections.length+' 個筆記章節</span></div>':'')+'</section>';
+ let html='<section class="hero"><canvas aria-hidden="true"></canvas><div class="kicker">WEEK '+String(n).padStart(2,'0')+'</div><h1>'+(data?.[0]||'尚無筆記')+'</h1><div class="english">'+(data?.[1]||'')+'</div>'+(data?'<div class="meta"><span>'+(n===10?'4 份課程講義':'講義 '+data[2]+' 頁')+'</span><span>'+sections.length+' 個筆記章節</span></div>':'')+'</section>';
  if(data){
  html+='<div class="sectiontitle"><h2>本週重點</h2></div><div class="cards">'+icons.map((icon,i)=>'<section class="card"><svg aria-hidden="true" viewBox="0 0 24 24">'+icon+'</svg><h3>'+data[3+i*2]+'</h3><p>'+data[4+i*2]+'</p></section>').join('')+'</div><div class="sectiontitle"><h2>章節筆記</h2>'+(sourceIds[n]?'<a target="_blank" rel="noopener" href="https://chatgpt.com/c/'+sourceIds[n]+'">完整原始筆記 ↗</a>':'<span>四份課程範圍 · 概覽版</span>')+'</div>';
  html+=sections.map((s,i)=>'<details><summary><span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+escapeText(s.title)+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="reading"></div></details>').join('');
