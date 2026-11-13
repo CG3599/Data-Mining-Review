@@ -10,13 +10,16 @@ course-note{display:block;margin:6px 0 10px}course-note>button{font:inherit;font
 @keyframes picker-beacon{0%,100%{box-shadow:0 0 0 0 transparent}45%{background:#28558a;box-shadow:0 0 0 4px #8bc8ff,0 0 18px #579ee0}}.page-picker select.picker-highlight{animation:picker-beacon .85s ease-in-out 2}@media(prefers-reduced-motion:reduce){.page-picker select.picker-highlight{animation:none;outline:2px solid #8bc8ff;outline-offset:3px}}
 
 /* Lecture-scoped additions; earlier weeks keep their original layout. */
-.lecture-page {border-top:1px solid #dce3ed;padding-top:1rem;margin-top:2rem;min-width:0}
+.lecture-page {display:contents}
 .page-source {display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;font-size:.85rem;color:#63718a;margin:.5rem 0 1.2rem}
 .page-source a {color:#8ac4ff}
-.source-note {background:#14283e;color:#dce8f8;border-left:3px solid #6eacdf;padding:1rem;line-height:1.8}
-.slide-original {margin:1.2rem 0;border:1px solid #dce3ed;border-radius:8px;overflow:hidden}
-.slide-original summary {padding:.7rem 1rem;font-size:.9rem;color:#9fc7ea}
+.source-note {color:var(--muted);font-size:13px;line-height:1.8}
+.slide-original {margin:18px 0;border-color:var(--line)}
+.slide-original summary {font-size:13px;color:var(--muted)}
 .slide-original img {display:block;width:100%;height:auto}
-.page-picker select[data-week10-picker] {max-width:100%;min-width:0;width:min(100%,38rem)}
+.week10-picker{flex-wrap:wrap}
+.week10-picker select{max-width:100%;min-width:0}
+.week10-picker select.picker-highlight{animation-iteration-count:3}
+@media(prefers-reduced-motion:reduce){.week10-picker select.picker-highlight{animation:none}}
 .lecture-page pre {overflow-x:auto;white-space:pre;padding:1rem;background:#14283e;color:#dce8f8;border-radius:6px}
 .lecture-page .equation-block {max-width:100%;overflow-x:auto}

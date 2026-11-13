@@ -113,7 +113,7 @@ function showWeek(){
    const gallery=n===10?'':'<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
    headings[1].insertAdjacentHTML('beforebegin','<section id="visual"><div class="sectiontitle"><h2>圖解複習</h2></div>'+studyDiagram(n)+gallery+'</section>');
    article.querySelector('.hero').insertAdjacentHTML('afterbegin',noteButton(n,'overview','本週總筆記'));
-   if(n!==10)article.querySelector('.hero').insertAdjacentHTML('beforeend',pagePicker(1,weeks[n][2],'跳到本週講義頁'));
+   article.querySelector('.hero').insertAdjacentHTML('beforeend',n===10?week10OverviewPicker():pagePicker(1,weeks[n][2],'跳到本週講義頁'));
    headings[0].insertAdjacentHTML('afterend',noteButton(n,'highlights','本週重點筆記'));
    headings[1].insertAdjacentHTML('afterend',noteButton(n,'chapters','章節總筆記'));
    article.querySelectorAll('.card').forEach((card,i)=>card.insertAdjacentHTML('afterbegin',noteButton(n,'concept-'+i,card.querySelector('h3').textContent+'筆記')));
@@ -162,7 +162,23 @@ document.addEventListener('submit',e=>{
  const right=Math.abs(v-q[3])<=0.000501;
  out.className=right?'correct':'incorrect';out.textContent=(right?'答對了。':'答錯了。')+q[4];convertPlainMath(out);
 });
-document.querySelector('nav').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;if(a.hash===location.hash)jump();const hash=a.hash;const highlight=()=>{if(location.hash!==hash)return;const id=hash.split('/')[1];const select=(id?document.getElementById(id):document.querySelector('.hero'))?.querySelector('[data-page-picker]');if(!select)return;select.classList.remove('picker-highlight');void select.offsetWidth;select.classList.add('picker-highlight')};if(hash===location.hash)highlight();else window.addEventListener('hashchange',highlight,{once:true})});
+document.querySelector('nav').addEventListener('click',e=>{
+ const a=e.target.closest('a');if(!a)return;
+ const hash=a.hash;
+ if(hash===location.hash)jump();
+ const highlight=()=>{
+  if(location.hash!==hash)return;
+  const id=hash.split('/')[1];
+  const container=id?document.getElementById(id):document.querySelector('.hero');
+  const select=container?.querySelector('[data-page-picker], [data-week10-picker], [data-week10-overview]');
+  if(!select)return;
+  select.classList.remove('picker-highlight');
+  void select.offsetWidth;
+  select.classList.add('picker-highlight');
+ };
+ if(hash===location.hash)highlight();
+ else window.addEventListener('hashchange',highlight,{once:true});
+});
 window.addEventListener('hashchange',showWeek);
 showWeek();
 

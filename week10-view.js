@@ -1,7 +1,10 @@
 // Week 10 page IDs include the lecture, so four page 1s never collide.
 function week10PageId(file, page) { return 'slide-' + file + '-' + page; }
 function week10Picker(s) {
- return '<label class="page-picker">跳到這份講義的 PDF 頁碼 <select data-week10-picker="'+s.file+'"><option value="">選擇頁數</option>'+s.pages.map(p=>'<option value="'+p.page+'">第 '+p.page+' 頁 · '+escapeText(p.title)+'</option>').join('')+'</select></label>';
+ return '<label class="page-picker week10-picker">跳到本章講義頁 <select data-week10-picker="'+s.file+'"><option value="">選擇頁數</option>'+s.pages.map(p=>'<option value="'+p.page+'">第 '+p.page+' 頁</option>').join('')+'</select></label>';
+}
+function week10OverviewPicker() {
+ return '<label class="page-picker week10-picker">跳到本週講義頁 <select data-week10-overview><option value="">選擇講義與頁數</option>'+week10Modules.map(m=>'<optgroup label="'+escapeText(m.title)+' · P. 1–'+m.pages.length+'">'+m.pages.map(p=>'<option value="'+m.file+'/'+p.page+'">'+escapeText(m.title)+' · 第 '+p.page+' 頁</option>').join('')+'</optgroup>').join('')+'</select></label>';
 }
 function renderWeek10Reading(s) {
  const source='lectures/'+s.file+'.pdf';
@@ -38,9 +41,10 @@ function jumpWeek10Page() {
  return true;
 }
 document.addEventListener('change',e=>{
- const picker=e.target.closest('[data-week10-picker]');
+ const picker=e.target.closest('[data-week10-picker], [data-week10-overview]');
  if(!picker || !picker.value)return;
- const hash='#week-10/m-'+picker.dataset.week10Picker+'/p'+picker.value;
+ const [file,page]=picker.hasAttribute('data-week10-overview')?picker.value.split('/'):[picker.dataset.week10Picker,picker.value];
+ const hash='#week-10/m-'+file+'/p'+page;
  picker.value='';
  if(location.hash===hash)jump();else location.hash=hash;
 });
