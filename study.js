@@ -110,7 +110,7 @@ function showWeek(){
    const article=document.querySelector('article');
    const headings=article.querySelectorAll('.sectiontitle');
    const cards=figures[n].map(([p,t])=>lectureCard(n,p,t));
-   const gallery=n===10?'':'<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
+   const gallery=n===10?week10FigureIndex():'<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
    headings[1].insertAdjacentHTML('beforebegin','<section id="visual"><div class="sectiontitle"><h2>圖解複習</h2></div>'+studyDiagram(n)+gallery+'</section>');
    article.querySelector('.hero').insertAdjacentHTML('afterbegin',noteButton(n,'overview','本週總筆記'));
    article.querySelector('.hero').insertAdjacentHTML('beforeend',n===10?week10OverviewPicker():pagePicker(1,weeks[n][2],'跳到本週講義頁'));
