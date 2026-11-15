@@ -27,3 +27,12 @@ course-note{display:block;margin:6px 0 10px}course-note>button{font:inherit;font
 .week10-example>a{display:block;margin-top:12px}.week10-example img{display:block;width:100%;height:auto;border-radius:8px}.week10-example figcaption a{color:var(--lime);white-space:nowrap}.week10-example figcaption{line-height:1.8}
 .week10-roc h4{margin:10px 0;color:var(--lime);font-size:18px}.week10-roc .roc-result{display:grid;grid-template-columns:minmax(240px,1fr) minmax(230px,1fr);gap:20px;align-items:center}.week10-roc .roc-chart svg{display:block;width:100%;height:auto;max-height:360px}.roc-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.roc-counts span{padding:10px;background:#172c44;border:1px solid var(--line);border-radius:6px;font-size:13px}.roc-counts strong{display:block;font-size:25px;color:var(--lime)}.week10-roc .roc-status{color:#ffd17c}.week10-roc details p{padding:0 15px 15px}.week10-roc figcaption{line-height:1.8}@media(max-width:760px){.week10-roc .roc-result{grid-template-columns:1fr}.week10-example{padding:10px}.week10-example img{min-width:0}}
 .week10-roc .roc-chart circle{fill:#ffd17c;stroke:#080d16;stroke-width:2}.week10-figure-links{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 18px 18px}.week10-figure-links h4{color:var(--lime);margin:10px 0}.week10-figure-links ul{padding-left:20px;margin:0}.week10-figure-links li{margin:7px 0}.week10-figure-links a:hover{text-decoration:underline}@media(max-width:640px){.week10-figure-links{grid-template-columns:1fr}}
+/* Supplemental course examples retain the existing reading-card design. */
+.course-index ul{padding:0 24px 18px 42px;line-height:2}
+.course-demo .course-bars{display:grid;gap:12px;margin-top:20px}
+.course-bars span{display:block;height:12px;background:#8ac6ff;border-radius:4px;max-width:100%}
+.neighbor-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.neighbor{display:grid;gap:8px;padding:10px;border:1px solid #526078;border-radius:8px;opacity:.65}
+.neighbor.chosen{border:2px solid #ffd17c;background:#343024;opacity:1}
+.neighbor small{font-size:12px}.neighbor b{font-size:19px}
+.course-demo [role=status]{font-weight:600;line-height:1.9}

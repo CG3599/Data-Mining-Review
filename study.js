@@ -64,6 +64,7 @@ function renderReading(n,s){
    const src='figures/plot-w'+n+'-p'+page+'.svg';
    html+='<figure class="diagram topic-example"><div class="kicker">座標圖 · P. '+page+'</div><h4>'+title+'</h4><a href="'+src+'" target="_blank" rel="noopener"><img loading="lazy" src="'+src+'" alt="'+title+'"></a><figcaption>'+caption+'</figcaption></figure>';
   }
+  html+=courseSupplement(n,page);
   for(const q of qs.filter(q=>q[0]===page)){html+=drillForm(n,q);placed.add(q)}
  }
  if(!s.content)html+='<p><a class="lecture" target="_blank" rel="noopener" href="lectures/'+lectureFiles[n]+'#page='+s.start+'">從 P. '+s.start+' 開啟講義 ↗</a></p>';
@@ -92,6 +93,7 @@ function rail(n){
 function jump(){
  if(weekNumber()===10 && jumpWeek10Page()){rail(10);return}
  const n=weekNumber(),target=location.hash.split('/')[1];
+ openCoursePage(n,target);
  const el=target&&document.getElementById(target);
  if(el){if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({block:'start'})}
  else window.scrollTo(0,0);
@@ -111,7 +113,7 @@ function showWeek(){
    const headings=article.querySelectorAll('.sectiontitle');
    const cards=figures[n].map(([p,t])=>lectureCard(n,p,t));
    const gallery=n===10?week10FigureIndex():'<details class="figure-index"><summary>本週講義圖表（'+cards.length+' 張）<span class="arrow">›</span></summary><div class="gallery">'+cards.join('')+'</div></details>';
-   headings[1].insertAdjacentHTML('beforebegin','<section id="visual"><div class="sectiontitle"><h2>圖解複習</h2></div>'+studyDiagram(n)+gallery+'</section>');
+   headings[1].insertAdjacentHTML('beforebegin','<section id="visual"><div class="sectiontitle"><h2>圖解複習</h2></div>'+studyDiagram(n)+gallery+(n===10?'':courseFigureIndex(n))+'</section>');
    article.querySelector('.hero').insertAdjacentHTML('afterbegin',noteButton(n,'overview','本週總筆記'));
    article.querySelector('.hero').insertAdjacentHTML('beforeend',n===10?week10OverviewPicker():pagePicker(1,weeks[n][2],'跳到本週講義頁'));
    headings[0].insertAdjacentHTML('afterend',noteButton(n,'highlights','本週重點筆記'));
