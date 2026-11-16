@@ -8,7 +8,7 @@ function week10OverviewPicker() {
 }
 function renderWeek10Reading(s) {
  const source='lectures/'+s.file+'.pdf';
- let html='<p><a class="lecture" href="'+source+'" target="_blank" rel="noopener">開啟原始 PDF · '+s.pages.length+' 頁 ↗</a></p><p class="source-note">本區逐頁對照原始教材；頁碼以 PDF 的實際頁序為準。自編例子、延伸計算與教材疑義均於文中標示。';
+ let html='<p><a class="lecture" href="'+source+'" target="_blank" rel="noopener">開啟原始 PDF · '+s.totalPages+' 頁 ↗</a></p><p class="source-note">本區逐頁對照原始教材；頁碼以 PDF 的實際頁序為準。自編例子、延伸計算與教材疑義均於文中標示。';
  if(s.file==='DM_week10')html+=' 此份 PDF 第 21–50 頁的投影片頁腳為 22–51，較實際頁序多 1。';
  html+='</p>';
  for(const p of s.pages) {
@@ -26,8 +26,8 @@ function renderWeek10Reading(s) {
 function jumpWeek10Page() {
  const match=location.hash.match(/^#week-10\/m-([A-Za-z0-9_]+)\/p(\d+)$/);
  if(!match)return false;
- const s=sectionLists[10].find(m=>m.file===match[1]);
  const page=Number(match[2]);
+ const s=sectionLists[10].find(m=>m.file===match[1]&&page>=m.first&&page<=m.last);
  if(!s || !s.pages.some(p=>p.page===page))return false;
  const chapter=document.getElementById('p'+s.start);
  if(!chapter)return false;

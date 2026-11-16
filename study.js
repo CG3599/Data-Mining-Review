@@ -6,7 +6,7 @@ try {
  if (Array.isArray(saved)) completed = new Set(saved.filter(x => typeof x === 'string'));
 } catch {storageOK = false}
 const weekNumber = () => Number(location.hash.match(/^#week-([1-9]\d*)(?:$|\/)/)?.[1] || 1);
-const sectionKey = (n,start) => 'w'+n+'-p'+start;
+const sectionKey = (n,start) => {const s=n===10?sectionLists[10].find(s=>s.start===start):null;return s?'w10-'+s.file+'-p'+s.first:'w'+n+'-p'+start;};
 function sectionsFor(n) {
  if (!weeks[n]) return [];
  if(n===10)return chapters(n);
@@ -16,6 +16,13 @@ function sectionsFor(n) {
  return list;
 }
 const sectionLists=Object.fromEntries(Object.keys(weeks).map(n=>[n,sectionsFor(Number(n))]));
+// Convert old whole-module completion once; retain all existing personal notes.
+let migratedWeek10=false;
+for(let i=1;i<=4;i++)if(completed.has('w10-p'+i)){
+ for(const s of sectionLists[10].filter(s=>s.moduleIndex===i))completed.add(sectionKey(10,s.start));
+ completed.delete('w10-p'+i);migratedWeek10=true;
+}
+if(migratedWeek10)try{localStorage.setItem(storageKey,JSON.stringify([...completed]))}catch{storageOK=false}
 function pagePicker(start,end,label){
  const options=[];
  for(let page=start;page<=end;page++)options.push('<option value="'+page+'">第 '+page+' 頁</option>');
@@ -83,7 +90,7 @@ function rail(n){
   let links='';
   if(w===n&&list.length){
    links='<div class="subnav"><a href="#week-'+n+'/visual">圖解複習</a>'+list.map(s=>{
-    const read=completed.has(sectionKey(n,s.start));return '<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">'+(n===10?s.range:'P. '+s.start+'–'+s.end)+'</small></span></a>'
+    const read=completed.has(sectionKey(n,s.start));return (n===10&&s.firstTopic?'<div class="module-nav-title">'+escapeText(s.moduleTitle)+'</div>':'')+'<a class="'+(read?'is-read':'')+'" href="#week-'+n+'/p'+s.start+'"><span>'+(read?'✓':'○')+'</span>'+ '<span>'+escapeText(s.title)+'<small class="side-pages">'+(n===10?s.range:'P. '+s.start+'–'+s.end)+'</small></span></a>'
    }).join('')+'</div>';
   }
   return '<div class="weekblock"><a class="week-link '+(w===n?'active ':'')+(list.length?'':'pending')+'" href="#week-'+w+'"><span><strong>Week '+w+'</strong><small>'+(weeks[w]?.[0]||'尚無筆記')+'</small></span>'+(list.length?'<span class="counter" aria-label="已讀章節">'+(done===list.length?'✓ ':'')+done+'/'+list.length+'</span>':'')+'</a>'+links+'</div>';
@@ -122,10 +129,11 @@ function showWeek(){
    article.querySelector('#visual .sectiontitle').insertAdjacentHTML('afterend',noteButton(n,'visual','圖解複習筆記'));
    article.querySelectorAll(':scope > details').forEach(el=>el.remove());
    sectionLists[n].forEach(s=>{
+    if(n===10&&s.firstTopic){const group=document.createElement('section');group.className='week10-module-heading';group.innerHTML='<h3>'+escapeText(s.moduleTitle)+'</h3><span>P. 1–'+s.totalPages+' · '+s.totalPages+' 頁</span>'+noteButton(10,'chapter-'+s.moduleIndex,s.moduleTitle+'總筆記');article.append(group)}
     const key=sectionKey(n,s.start),qs=drills[n].filter(q=>q[0]>=s.start&&q[0]<=s.end);
     const el=document.createElement('details');el.id='p'+s.start;
     el.innerHTML='<summary><span>'+escapeText(s.title)+'</span>'+(qs.length?'<small class="practice-tag">計算題 ×'+qs.length+'</small>':'')+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="readbar"><label><input type="checkbox" data-key="'+key+'" '+(completed.has(key)?'checked':'')+'> 已讀本章</label><span>'+s.range+'</span></div><div class="reading"></div>';
-    el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?week10Picker(s):pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,'chapter-'+s.start,s.title+'筆記'));
+    el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?week10Picker(s):pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,n===10?'topic-'+s.file+'-'+s.first:'chapter-'+s.start,s.title+'筆記'));
     el.addEventListener('toggle',()=>{const body=el.querySelector('.reading');if(el.open&&!body.hasChildNodes()){body.innerHTML=renderReading(n,s);convertPlainMath(body)}});
     article.append(el);
    });
