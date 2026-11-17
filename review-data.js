@@ -180,6 +180,6 @@ const drills = {
 };
 
 
-// Week 10 is a four-scope overview pending original lecture PDFs.
+// Week 10 exercises are loaded from week10-drills.js, scoped by PDF file.
 figures[10]=[];
 drills[10]=[];

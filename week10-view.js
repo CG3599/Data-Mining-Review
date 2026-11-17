@@ -19,6 +19,7 @@ function renderWeek10Reading(s) {
   if(s.file==='DM_week10' && p.page>=21)html+='<span>投影片頁腳 '+(p.page+1)+'</span>';
   html+='</div>'+mathMarkdown(p.body);
   html+=week10Supplement(s.file,p.page);
+  html+=drills[10].filter(q=>q[5]===s.file&&q[0]===p.page).map(q=>drillForm(10,q)).join('');
   html+='<details class="slide-original"><summary>展開原始投影片 · 第 '+p.page+' 頁</summary><a href="'+source+'#page='+p.page+'" target="_blank" rel="noopener"><img loading="lazy" width="1248" height="702" src="figures/week10/'+s.file+'-'+p.page+'.webp" alt="'+escapeText(s.title)+'，PDF 第 '+p.page+' 頁：'+escapeText(p.title)+'"></a></details></section>';
  }
  return html;

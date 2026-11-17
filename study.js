@@ -30,7 +30,7 @@ function pagePicker(start,end,label){
 }
 function drillForm(n,q){
  const [p,title,prompt]=q;
- return '<form class="drill" data-week="'+n+'" data-page="'+p+'"><div class="practice-tag">計算題 · P. '+p+'</div><h4>'+title+'</h4><p>'+prompt+'</p><label>你的答案 <input name="answer" autocomplete="off" placeholder="數值、百分比或分數" required></label> <button>送出答案</button><output aria-live="polite"></output></form>';
+ return '<form class="drill" data-week="'+n+'" data-page="'+p+'"'+(q[5]?' data-file="'+q[5]+'"':'')+'><div class="practice-tag">'+(n===10?'自編計算題':'計算題')+' · P. '+p+'</div><h4>'+title+'</h4><p>'+prompt+'</p>'+(n===10?'<p class="exercise-hint">非整數可輸入分數，或四捨五入至小數第 3 位。</p>':'')+'<label>你的答案 <input name="answer" autocomplete="off" placeholder="數值、百分比或分數" required></label> <button>送出答案</button><output aria-live="polite"></output></form>';
 }
 function answerValue(raw){
  const s=raw.normalize('NFKC').trim().replace(/\s+/g,'');
@@ -130,7 +130,7 @@ function showWeek(){
    article.querySelectorAll(':scope > details').forEach(el=>el.remove());
    sectionLists[n].forEach(s=>{
     if(n===10&&s.firstTopic){const group=document.createElement('section');group.className='week10-module-heading';group.innerHTML='<h3>'+escapeText(s.moduleTitle)+'</h3><span>P. 1–'+s.totalPages+' · '+s.totalPages+' 頁</span>'+noteButton(10,'chapter-'+s.moduleIndex,s.moduleTitle+'總筆記');article.append(group)}
-    const key=sectionKey(n,s.start),qs=drills[n].filter(q=>q[0]>=s.start&&q[0]<=s.end);
+    const key=sectionKey(n,s.start),qs=drills[n].filter(q=>n===10?q[5]===s.file&&q[0]>=s.first&&q[0]<=s.last:q[0]>=s.start&&q[0]<=s.end);
     const el=document.createElement('details');el.id='p'+s.start;
     el.innerHTML='<summary><span>'+escapeText(s.title)+'</span>'+(qs.length?'<small class="practice-tag">計算題 ×'+qs.length+'</small>':'')+'<span class="range">'+s.range+'</span><span class="arrow">›</span></summary><div class="readbar"><label><input type="checkbox" data-key="'+key+'" '+(completed.has(key)?'checked':'')+'> 已讀本章</label><span>'+s.range+'</span></div><div class="reading"></div>';
     el.querySelector('summary').insertAdjacentHTML('afterend',(n===10?week10Picker(s):pagePicker(s.start,s.end,'跳到本章講義頁'))+noteButton(n,n===10?'topic-'+s.file+'-'+s.first:'chapter-'+s.start,s.title+'筆記'));
@@ -167,7 +167,7 @@ document.addEventListener('change',e=>{
 });
 document.addEventListener('submit',e=>{
  if(!e.target.matches('.drill'))return;
- e.preventDefault();const f=e.target,q=drills[f.dataset.week].find(x=>x[0]===Number(f.dataset.page)),v=answerValue(f.elements.answer.value),out=f.querySelector('output');
+ e.preventDefault();const f=e.target,q=drills[f.dataset.week].find(x=>x[0]===Number(f.dataset.page)&&(f.dataset.week!=='10'||x[5]===f.dataset.file)),v=answerValue(f.elements.answer.value),out=f.querySelector('output');
  if(!Number.isFinite(v)){out.textContent='請輸入有效數字、百分比或分數，例如 0.5、50% 或 1/2。';return}
  const right=Math.abs(v-q[3])<=0.000501;
  out.className=right?'correct':'incorrect';out.textContent=(right?'答對了。':'答錯了。')+q[4];convertPlainMath(out);
