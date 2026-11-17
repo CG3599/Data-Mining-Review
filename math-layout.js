@@ -12,7 +12,10 @@ function mathMarkdown(source) {
   const id=formulas.push(typeset(block??inline,block!==undefined))-1;
   return 'DMFORMULAKEY'+id+'END';
  });
- return marked.parse(escapeText(protectedSource)).replace(/DMFORMULAKEY(\d+)END/g,(_,id)=>formulas[id]);
+ return marked.parse(escapeText(protectedSource))
+  // Marked escapes code a second time; undo only the extra entity layer inside code.
+  .replace(/(<code\b[^>]*>)([\s\S]*?)(<\/code>)/g,(_,open,body,close)=>open+body.replace(/&amp;(amp|lt|gt);/g,'&$1;')+close)
+  .replace(/DMFORMULAKEY(\d+)END/g,(_,id)=>formulas[id]);
 }
 
 const mathRewrites = new Map([

@@ -39,3 +39,4 @@ course-note{display:block;margin:6px 0 10px}course-note>button{font:inherit;font
 .module-nav-title{padding:18px 10px 7px;color:var(--muted,#adc1da);font-size:12px;font-weight:700;line-height:1.6}
 .week10-module-heading{margin:30px 0 14px;padding-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .week10-module-heading h3{margin:0}.week10-module-heading>span{font-size:13px;color:var(--muted,#adc1da)}
+.reading img[src^="figures/imported/"]{display:block;width:100%;max-width:680px;height:auto;margin:18px auto}
